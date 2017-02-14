@@ -1,40 +1,51 @@
 # Accern
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/accern`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+A command line interface for the Accern API. Which is used for streaming the realtime data feed.
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'accern'
+```shell
+gem install accern
 ```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install accern
 
 ## Usage
 
-TODO: Write usage instructions here
+To get started run the `accern` command and follow the prompts.
 
-## Development
+```shell
+$ accern
+$ Please enter your API Token:
+$ Please enter  the document format (JSON or CSV):
+$ Your client is now configured and settings saved to ~/.accern.rc.yml.
+```
+The the next time you run `accern` the client will begin streaming the full data feed to daily files.
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+### File formats
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+The program will generate daily new line delimited JSON files ex. `2017-02-13-accern.jsonl`
+
+## Advanced usage
+
+To reset and bring up the getting started prompts run:
+
+```shell
+accern --init
+```
+
+### Filtering (coming soon)
+
+You can filter by ticker by providing the ticker option.
+
+```shell
+accern --ticker appl
+```
+You can filter by multiple tickers by providing a comma separated list of tickers.
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/accern/accern.
-
-
-## License
-
-The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+1. Create an issue and describe your idea
+2. Fork it
+3. Create your feature branch (`git checkout -b my-new-feature`)
+4. Commit your changes (`git commit -am 'Add some feature'`)
+5. Push to the branch (`git push origin my-new-feature`)
+6. Create new Pull Request
