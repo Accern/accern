@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.version       = Accern::VERSION
   spec.authors       = ['Carlos Espejo']
   spec.email         = ['vendors@accern.com']
-  spec.summary       = %w(A command line interface for the Accern API.)
+  spec.summary       = 'A command line interface for the Accern API.'
   spec.homepage      = 'https://github.com/Accern/accern'
   spec.license       = 'MIT'
 
