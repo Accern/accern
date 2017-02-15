@@ -4,20 +4,20 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'accern/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "accern"
+  spec.name          = 'accern'
   spec.version       = Accern::VERSION
-  spec.authors       = ["Carlos Espejo"]
-  spec.email         = ["vendors@accern.com"]
-  spec.summary       = %q{A command line interface for the Accern API.}
-  spec.homepage      = "https://github.com/orgs/Accern/accern"
-  spec.license       = "MIT"
+  spec.authors       = ['Carlos Espejo']
+  spec.email         = ['vendors@accern.com']
+  spec.summary       = %w(A command line interface for the Accern API.)
+  spec.homepage      = 'https://github.com/Accern/accern'
+  spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
   end
-  spec.bindir        = "exe"
+  spec.bindir        = 'exe'
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
-  spec.require_paths = ["lib"]
+  spec.require_paths = ['lib']
   spec.required_ruby_version = '>= 2.0'
 
   spec.add_development_dependency 'bundler', '~> 1.14'
