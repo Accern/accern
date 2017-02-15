@@ -15,12 +15,11 @@ To get started run the `accern` command and follow the prompts.
 ```shell
 $ accern
 $ Please enter your API Token:
-$ Please enter  the document format (JSON or CSV):
 $ Your client is now configured and settings saved to ~/.accern.rc.yml.
 ```
 The the next time you run `accern` the client will begin streaming the full data feed to daily files.
 
-### File formats
+### File formats (coming soon)
 
 The program will generate daily new line delimited JSON files ex. `2017-02-13-accern.jsonl`
 
