@@ -1,3 +1,3 @@
 module Accern
-  VERSION = '3.0.0'.freeze
+  VERSION = '3.0.0.beta1'.freeze
 end

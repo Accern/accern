@@ -17,11 +17,8 @@ RSpec.configure do |config|
   config.order = 'random'
 
   config.before(:each) do
-    @temp_directory =
-      Dir.mktmpdir(
-        'test_home', File.expand_path('./', __dir__)
-      )
-
+    @temp_directory = "#{File.expand_path('./', __dir__)}/test_home"
+    FileUtils.mkdir(@temp_directory)
     @original_home_path = ENV['HOME']
     ENV['HOME'] = @temp_directory
   end

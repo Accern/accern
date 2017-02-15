@@ -1,8 +1,8 @@
 require 'accern/version'
 require 'accern/cli'
+require 'accern/alpha'
+require 'accern/flatner'
 require 'optparse'
 require 'yaml'
-
-# module Accern
-#   # Your code goes here...
-# end
+require 'json'
+require 'net/http'

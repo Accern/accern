@@ -1,15 +1,17 @@
 module Accern
   class Cli
-    attr_reader :stdout, :stdin, :token,:filetype, :valid_types, :config_path,
-                :options, :args
+    attr_reader :stdout, :stdin, :token, :filetype, :valid_types, :config_path,
+                :options, :args, :feed
 
-    def initialize(stdout: $stdout, stdin: $stdin, args: [])
+    def initialize(stdout: $stdout, stdin: $stdin, args: [], feed: Alpha)
       @stdout = stdout
       @stdin = stdin
       @args = args
       @options = {}
+      @filetype = 'json'
       @valid_types = %w(json csv)
       @config_path = "#{ENV['HOME']}/.accern.rc.yml"
+      @feed = feed
     end
 
     def start
@@ -18,19 +20,20 @@ module Accern
 
       if options[:init]
         ask_for_info
+      else
+        feed.new(token: token, format: filetype.to_sym)
+            .download_loop('./feed.jsonl')
       end
     end
 
     def ask_for_token
-      ask_question('Please enter your API Token:', :token)
+      ask_question('Please enter your API Token: ', :token)
     end
 
     def ask_for_filetype
-      ask_question('Please enter the file type (JSON or CSV):', :filetype)
+      ask_question('Please enter the file type (JSON or CSV): ', :filetype)
       valid_filetype?
     end
-
-    private
 
     def load_config
       if File.exist?(config_path)
@@ -42,14 +45,34 @@ module Accern
       end
     end
 
+    def parse_options
+      parser = OptionParser.new do |opts|
+        opts.banner = 'A command line interface for the Accern API'
+
+        opts.on('--init', 'Display the getting started prompts.') do
+          options[:init] = true
+        end
+
+        opts.on('--version', 'Show version') do
+          options[:version] = Accern::VERSION
+          puts Accern::VERSION
+          exit
+        end
+      end
+
+      parser.parse!(args)
+    end
+
+    private
+
     def ask_for_info
       ask_for_token
-      ask_for_filetype
+      # ask_for_filetype
       save_config
     end
 
     def ask_question(text, field)
-      stdout.puts text
+      stdout.print text
       instance_variable_set(
         "@#{field}", stdin.gets.to_s.chomp.downcase.delete('.', '')
       )
@@ -69,26 +92,6 @@ module Accern
 
       File.write(config_path, config.to_yaml)
       stdout.puts 'Your client is now configured and settings saved to ~/.accern.rc.yml.'
-    end
-
-    def parse_options
-      parser = OptionParser.new do |opts|
-        opts.banner = 'A command line interface for the Accern API'
-
-        opts.on('--init', 'Display the getting started prompts.') do
-          options[:init] = true
-        end
-
-        opts.on('--version', 'Show version') do
-          options[:version] = Accern::VERSION
-          unless ENV['RUBY_ENV'] == 'test'
-            puts Accern::VERSION
-            exit
-          end
-        end
-      end
-
-      parser.parse!(args)
     end
   end
 end

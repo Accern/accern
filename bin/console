@@ -13,6 +13,7 @@ require 'pry'
 # IRB.start(__FILE__)
 
 args = ['-h']
+args = []
 
 c = Accern::Cli.new(args: args)
 
