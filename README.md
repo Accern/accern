@@ -17,11 +17,7 @@ $ accern
 $ Please enter your API Token:
 $ Your client is now configured and settings saved to ~/.accern.rc.yml.
 ```
-The the next time you run `accern` the client will begin streaming the full data feed to daily files.
-
-### File formats (coming soon)
-
-The program will generate daily new line delimited JSON files ex. `2017-02-13-accern.jsonl`
+The the next time you run `accern` the client will begin streaming the full data feed to `./feed.jsonl`
 
 ## Advanced usage
 
@@ -30,15 +26,6 @@ To reset and bring up the getting started prompts run:
 ```shell
 accern --init
 ```
-
-### Filtering (coming soon)
-
-You can filter by ticker by providing the ticker option.
-
-```shell
-accern --ticker appl
-```
-You can filter by multiple tickers by providing a comma separated list of tickers.
 
 ## Contributing
 
