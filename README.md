@@ -1,3 +1,4 @@
+[![Gem Version](https://badge.fury.io/rb/accern@2x.png)](https://badge.fury.io/rb/accern)
 # Accern
 
 A command line interface for the Accern API. Which is used for streaming the realtime data feed.
