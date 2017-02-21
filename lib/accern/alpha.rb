@@ -3,10 +3,10 @@ module Accern
     attr_reader :token, :base_url, :uri, :last_id, :new_id, :docs,
                 :format, :flat, :params
 
-    def initialize(options)
-      @token = options.fetch(:token)
-      @format = options.fetch(:format, :json)
-      @params = options.fetch(:params, {})
+    def initialize(token:, format: :json, params: {})
+      @token = token
+      @format = format
+      @params = params
       @base_url = 'http://feed.accern.com/v3/alphas'
       @uri = URI(base_url)
       read_last_id

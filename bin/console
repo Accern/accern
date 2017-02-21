@@ -12,9 +12,12 @@ require 'pry'
 # require "irb"
 # IRB.start(__FILE__)
 
-args = ['-h']
-args = []
+# args = ['-h']
+# args = []
 
-c = Accern::Cli.new(args: args)
+args = {token: "e5b1c05c5cc0f6a90f621724ffe18258",
+ format: :json}
 
-binding.pry
+ a = Accern::Alpha.new(args)
+
+# c = Accern::Cli.new(args: args)
