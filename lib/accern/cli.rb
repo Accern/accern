@@ -1,7 +1,7 @@
 module Accern
   class Cli
     attr_reader :stdout, :stdin, :token, :filetype, :valid_types, :config_path,
-                :options, :args, :feed
+                :options, :args, :feed, :tickers
 
     def initialize(stdout: $stdout, stdin: $stdin, args: [], feed: Alpha)
       @stdout = stdout
@@ -12,6 +12,7 @@ module Accern
       @valid_types = %w(json csv)
       @config_path = "#{ENV['HOME']}/.accern.rc.yml"
       @feed = feed
+      @tickers = []
     end
 
     def start
@@ -21,8 +22,8 @@ module Accern
       if options[:init]
         ask_for_info
       else
-        feed.new(token: token, format: filetype.to_sym)
-            .download_loop('./feed.jsonl')
+        feed.new(token: token, format: filetype.to_sym, ticker: tickers.join(','))
+            .download_loop(path: './feed.jsonl')
       end
     end
 
@@ -58,9 +59,20 @@ module Accern
           puts Accern::VERSION
           exit
         end
+
+        opts.on("--ticker NAME", "Filters document by ticker") do |tic|
+          options[:ticker] = tic.to_s.downcase.split(',')
+          @tickers += options[:ticker]
+        end
+
+        opts.on("--ticker-file PATH", "Receives the path to a file that has tickers") do |t_path|
+          options[:ticker_path] = t_path
+          @tickers += read_tickers(t_path)
+        end
       end
 
       parser.parse!(args)
+      @tickers.map {|t| t.gsub!(/\W/, '')}
     end
 
     private
@@ -92,6 +104,11 @@ module Accern
 
       File.write(config_path, config.to_yaml)
       stdout.puts 'Your client is now configured and settings saved to ~/.accern.rc.yml.'
+    end
+
+    def read_tickers(path)
+      return [] unless File.exist?(path)
+      File.readlines(options[:ticker_path]).map { |t| t.downcase.chomp }
     end
   end
 end

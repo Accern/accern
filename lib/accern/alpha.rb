@@ -1,10 +1,11 @@
 module Accern
   class Alpha
     attr_reader :token, :base_url, :uri, :last_id, :new_id, :docs,
-                :format, :flat, :params
+                :format, :flat, :params, :ticker
 
-    def initialize(token:, format: :json, params: {})
+    def initialize(token:, ticker:, format: :json, params: {})
       @token = token
+      @ticker = ticker
       @format = format
       @params = params
       @base_url = 'http://feed.accern.com/v3/alphas'
@@ -14,9 +15,7 @@ module Accern
     end
 
     def download(path)
-      uri.query = URI.encode_www_form(last_id: last_id) if last_id
-      puts uri
-
+      create_uri
       format_response(
         Net::HTTP.new(uri.host, uri.port).request_get(uri, header)
       )
@@ -42,14 +41,28 @@ module Accern
       puts e.backtrace
     end
 
-    def download_loop(path)
+    def download_loop(path:)
       loop do
         download(path)
         sleep 8
       end
     end
 
+
+    def create_uri
+      uri.query = URI.encode_www_form(combine_query)
+      puts uri
+    end
+
     private
+
+    def combine_query
+      filters = Hash.new
+      filters[:ticker] = ticker unless ticker.empty?
+      filters[:last_id] = last_id if last_id
+      # filters[:index] = index if index
+      filters
+    end
 
     def header
       { 'Authorization' => %(Token token="#{token}"),  'User-Agent' => "Accern #{VERSION} (#{RUBY_PLATFORM})" }

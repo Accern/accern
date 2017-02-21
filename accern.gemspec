@@ -6,7 +6,7 @@ require 'accern/version'
 Gem::Specification.new do |spec|
   spec.name          = 'accern'
   spec.version       = Accern::VERSION
-  spec.authors       = ['Carlos Espejo']
+  spec.authors       = ['Carlos Espejo', 'Kerry Imai']
   spec.email         = ['vendors@accern.com']
   spec.summary       = 'A command line interface for the Accern API.'
   spec.homepage      = 'https://github.com/Accern/accern'

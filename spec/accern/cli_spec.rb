@@ -99,12 +99,55 @@ module Accern
       expect(c.options).to eq(init: true)
     end
 
+    it 'formats ticker into a array' do
+      c = Cli.new(args: ['--ticker', 'aapl'])
+      c.parse_options
+      expect(c.tickers).to eq(['aapl'])
+    end
+
+    it 'reads the ticker file and formats into a array' do
+      generate_ticker_file
+      c = Cli.new(args: ['--ticker-file', ticker_file_path])
+      c.parse_options
+      expect(c.tickers).to eq(%w(aapl fb amzn))
+    end
+
+    it 'combines ticker and ticker file into a array' do
+      generate_ticker_file
+      c = Cli.new(args: ['--ticker-file', ticker_file_path, '--ticker', 'GOOG'])
+      c.parse_options
+      expect(c.tickers).to eq(%w(aapl fb amzn goog))
+    end
+
+    it 'sanitizes ticker and ticker file input' do
+      generate_bad_ticker_file
+      c = Cli.new(args: ['--ticker-file', ticker_file_path, '--ticker', 'GOOG'])
+      c.parse_options
+      expect(c.tickers).to eq(%w(aapl fb amzn goog))
+    end
+
     it 'calls the Accern API' do
+      generate_ticker_file
+      generate_config
+      args = ['--ticker-file', ticker_file_path, '--ticker', 'GOOG']
+      feed = spy(Alpha)
+      c = Cli.new(args: args, feed: feed)
+      c.start
+      expect(feed).to have_received(:new).with(
+        token: 'xyz', format: :json, ticker: 'aapl,fb,amzn,goog'
+      )
+      expect(feed).to have_received(:download_loop)
+    end
+
+    it 'passes the correct values to Alpha' do
+      generate_ticker_file
       generate_config
       feed = spy(Alpha)
-      c = Cli.new(args: [''], feed: feed)
+      c = Cli.new(feed: feed)
       c.start
-      expect(feed).to have_received(:new).with(token: 'xyz', format: :json)
+      expect(feed).to have_received(:new).with(
+        token: 'xyz', format: :json, ticker: ""
+      )
       expect(feed).to have_received(:download_loop)
     end
 
@@ -121,6 +164,26 @@ module Accern
 
     def config_path
       "#{@temp_directory}/.accern.rc.yml"
+    end
+
+    def ticker_file_path
+      "#{@temp_directory}/tickers.txt"
+    end
+
+    def generate_ticker_file
+      File.open(ticker_file_path, 'w') do |f|
+        f.puts 'aapl'
+        f.puts 'fb'
+        f.puts 'amzn'
+      end
+    end
+
+    def generate_bad_ticker_file
+      File.open(ticker_file_path, 'w') do |f|
+        f.puts 'aa pl '
+        f.puts 'fb.'
+        f.puts 'AMZn'
+      end
     end
   end
 end
