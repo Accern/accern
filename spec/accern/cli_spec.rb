@@ -83,6 +83,13 @@ module Accern
       expect(c.options).to eq(version: VERSION)
     end
 
+    it 'has a ticker flag' do
+      generate_config
+      c = Cli.new(args: ["--ticker", "amzn,aapl"])
+      c.parse_options
+      expect(c.options).to eq(ticker: ["amzn", "aapl"])
+    end
+
     it 'implements init flag' do
       expect($stdin).to receive(:gets).and_return('abc')
       expect($stdout).to receive(:print)
@@ -126,27 +133,65 @@ module Accern
       expect(c.tickers).to eq(%w(aapl fb amzn goog))
     end
 
-    it 'calls the Accern API' do
+
+    it 'validates index value' do
+      c = Cli.new(args: ['--index', 'bad500'])
+      expect{c.parse_options}.to raise_error(OptionParser::InvalidArgument)
+    end
+
+    it 'receives index flag argument' do
+      c = Cli.new(args: ['--index', 'sp500'])
+      c.parse_options
+      expect(c.indexes).to eq(['sp500'])
+    end
+
+    it 'allow multiple indexes seperated with comma' do
+      c = Cli.new(args: ['--index', 'sp500,russell3000,barrons400'])
+      c.parse_options
+      expect(c.indexes).to eq(%w(sp500 russell3000 barrons400))
+    end
+
+    it 'accepts a index file and parse the indexes' do
+      generate_index_file
+      c = Cli.new(args: ['--index-file', index_file_path])
+      c.parse_options
+      expect(c.indexes).to eq(["sp500", "russell3000", "barrons400"])
+    end
+
+    it 'combines indexes and index file into a array' do
+      generate_index_file
+      c = Cli.new(args: ['--index-file', index_file_path, '--index', 'wilshire5000'])
+      c.parse_options
+      expect(c.indexes).to eq(["sp500", "russell3000", "barrons400", "wilshire5000"])
+    end
+
+    it 'sanitizes indexes input' do
+      generate_bad_index_file
+      c = Cli.new(args: ['--index-file', index_file_path, '--index', 'Wil shire-5000'])
+      c.parse_options
+      expect(c.indexes).to eq(["sp500", "russell3000", "barrons400", "wilshire5000"])
+    end
+
+    it 'instantiate alpha with filters' do
       generate_ticker_file
       generate_config
-      args = ['--ticker-file', ticker_file_path, '--ticker', 'GOOG']
+      args = ['--ticker-file', ticker_file_path, '--ticker', 'GOOG', '--index', 'Wil shire-5000']
       feed = spy(Alpha)
       c = Cli.new(args: args, feed: feed)
       c.start
       expect(feed).to have_received(:new).with(
-        token: 'xyz', format: :json, ticker: 'aapl,fb,amzn,goog'
+      token: 'xyz', format: :json, ticker: 'aapl,fb,amzn,goog', index: "wilshire5000"
       )
       expect(feed).to have_received(:download_loop)
     end
 
-    it 'passes the correct values to Alpha' do
-      generate_ticker_file
+    it 'instantiate alpha without filters' do
       generate_config
       feed = spy(Alpha)
       c = Cli.new(feed: feed)
       c.start
       expect(feed).to have_received(:new).with(
-        token: 'xyz', format: :json, ticker: ""
+      token: 'xyz', format: :json, ticker: "", index: ''
       )
       expect(feed).to have_received(:download_loop)
     end
@@ -170,6 +215,10 @@ module Accern
       "#{@temp_directory}/tickers.txt"
     end
 
+    def index_file_path
+      "#{@temp_directory}/index.txt"
+    end
+
     def generate_ticker_file
       File.open(ticker_file_path, 'w') do |f|
         f.puts 'aapl'
@@ -183,6 +232,22 @@ module Accern
         f.puts 'aa pl '
         f.puts 'fb.'
         f.puts 'AMZn'
+      end
+    end
+
+    def generate_index_file
+      File.open(index_file_path, 'w') do |f|
+        f.puts 'sp500'
+        f.puts 'russell3000'
+        f.puts 'barrons400'
+      end
+    end
+
+    def generate_bad_index_file
+      File.open(index_file_path, 'w') do |f|
+        f.puts 's&p 500'
+        f.puts 'russell/3000'
+        f.puts 'BarronS400'
       end
     end
   end

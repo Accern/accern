@@ -1,11 +1,12 @@
 module Accern
   class Alpha
     attr_reader :token, :base_url, :uri, :last_id, :new_id, :docs,
-                :format, :flat, :params, :ticker
+                :format, :flat, :params, :ticker, :index
 
-    def initialize(token:, ticker:, format: :json, params: {})
+    def initialize(token:, ticker:, index:, format: :json)
       @token = token
       @ticker = ticker
+      @index = index
       @format = format
       @params = params
       @base_url = 'http://feed.accern.com/v3/alphas'
@@ -60,7 +61,7 @@ module Accern
       filters = Hash.new
       filters[:ticker] = ticker unless ticker.empty?
       filters[:last_id] = last_id if last_id
-      # filters[:index] = index if index
+      filters[:index] = index unless index.empty?
       filters
     end
 

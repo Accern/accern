@@ -12,12 +12,14 @@ require 'pry'
 # require "irb"
 # IRB.start(__FILE__)
 
-# args = ['-h']
-# args = []
 
 
-c = Accern::Cli.new(args: args)
+
+
+ticker = "amzn,aapl"
+# ["--ticker", "aapp,amaz,lol"]
+# token: '08b14780c4b4aae5ac97d92c33d25495',
+args = {format: :json, index: "sp500"}
+c = Accern::Cli.new( args: ["--index", "sp500,barrons400"])
 binding.pry
-
-
-# c = Accern::Cli.new(args)
+# ticker=amzn&
