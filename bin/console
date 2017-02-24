@@ -15,9 +15,11 @@ require 'pry'
 # args = ['-h']
 # args = []
 
-args = {token: "e5b1c05c5cc0f6a90f621724ffe18258",
+args = {token: "0652400596ecf80e014176dd4bc17044",
  format: :json}
 
  a = Accern::Alpha.new(args)
 
-# c = Accern::Cli.new(args: args)
+# c = Accern::Cli.new(args)
+
+binding.pry

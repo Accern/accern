@@ -52,7 +52,7 @@ module Accern
     private
 
     def header
-      { 'Authorization' => %(Token token="#{token}") }
+      { 'Authorization' => %(Token token="#{token}"),  'User-Agent' => "Accern #{VERSION} (#{RUBY_PLATFORM})" }
     end
 
     def save_last_id
