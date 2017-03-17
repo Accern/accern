@@ -73,7 +73,7 @@ module Accern
           @tickers += read_file(t_path)
         end
 
-        index_options = ['sp500', 'russell1000', 'russell3000', 'wilshire5000', 'barrons400']
+        index_options = ['sp500', 'russell1000', 'russell3000', 'wilshire5000', 'barrons400', 'dow30']
         opts.on("--index TYPE", "Filters document by index") do |i|
           options[:index] = i.to_s.downcase.split(',')
           options[:index] = sanitizes_input(options[:index])

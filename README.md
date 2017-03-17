@@ -7,7 +7,11 @@ A command line interface for the Accern API. Which is used for streaming the rea
 ## Installation
 
 ```shell
-gem install accern
+# default macOS Ruby
+$ sudo gem install accern
+
+# When using a Ruby version manager
+$ gem install accern
 ```
 
 ## Usage
@@ -26,7 +30,62 @@ The the next time you run `accern` the client will begin streaming the full data
 To reset and bring up the getting started prompts run:
 
 ```shell
-accern --init
+$ accern --init
+```
+
+### Filter by ticker
+
+```shell
+# single ticker
+$ accern --ticker appl
+
+# multiple tickers
+$ accern --ticker "appl,amzn"
+```
+
+### Filter by ticker file
+Create a newline delimited ticker file:
+
+```
+appl
+amzn
+```
+
+```shell
+$ accern --ticker-file ./my_tickers.txt
+```
+
+### Filter by index
+
+The index value must be one of the following values
+
+index					 | expected value
+-----------------|----------------------
+S&P 500				| sp500
+Russell 1000		| russell1000
+Russell 3000		| russell3000
+Wilshire 5000		| wilshire5000
+Barron's 400		| barrons400
+DOW 30				| dow30
+
+```shell
+# single index
+$ accern --index sp500
+
+# multiple indexes
+$ accern --index "dow30,russell1000"
+```
+
+### Filter by index file
+Create a newline delimited index file with the any of the allowed values:
+
+```
+dow30
+sp500
+```
+
+```shell
+$ accern --index-file ./my_indexes.txt
 ```
 
 ## Contributing

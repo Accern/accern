@@ -12,3 +12,5 @@
 # rspec failure tracking
 .rspec_status
 test_home
+alpha_last_id.yml
+feed.jsonl
