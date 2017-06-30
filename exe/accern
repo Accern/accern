@@ -1,4 +1,11 @@
 #!/usr/bin/env ruby
 require 'accern'
 
+trap 'SIGINT' do
+  puts "\nExiting"
+  exit 130
+end
+
+puts "Press CTRL + C to Exit\n\n"
+
 Accern::Cli.new(args: ARGV).start

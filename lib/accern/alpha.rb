@@ -3,7 +3,7 @@ module Accern
     attr_reader :token, :base_url, :uri, :last_id, :new_id, :docs,
                 :format, :flat, :params, :ticker, :index
 
-    def initialize(token:, ticker:, index:, format: :json)
+    def initialize(token: nil, ticker: nil, index: nil, format: :json)
       @token = token
       @ticker = ticker
       @index = index
@@ -42,7 +42,7 @@ module Accern
       puts e.backtrace
     end
 
-    def download_loop(path:)
+    def download_loop(path: nil)
       loop do
         download(path)
         sleep 8
