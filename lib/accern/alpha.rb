@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Accern
   class Alpha
     attr_reader :token, :base_url, :uri, :last_id, :new_id, :docs,
@@ -9,7 +11,7 @@ module Accern
       @index = index
       @format = format
       @params = params
-      @base_url = 'http://feed.accern.com/v3/alphas'
+      @base_url = 'https://feed.accern.com/v3/alphas'
       @uri = URI(base_url)
       read_last_id
       @flat = Flatner.new
@@ -17,9 +19,9 @@ module Accern
 
     def download(path)
       create_uri
-      format_response(
-        Net::HTTP.new(uri.host, uri.port).request_get(uri, header)
-      )
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true
+      format_response(http.request_get(uri, header))
 
       return if new_id == last_id
 
